@@ -1,5 +1,23 @@
 :- initialization main.
 
+existe(tabuleiro, [eixoX, eixoY], pino) :-
+    nth1(eixoX, tabuleiro, valores),
+    nth1(eixoY, valores, pino).
+
+existePino(tabuleiro, [eixoX, eixoY]) :-
+    pino(p),
+    existe(tabuleiro, [eixoX, eixoY], p).
+
+estaLivre(tabuleiro, [eixoX, eixoY]) :-
+    livre(p),
+    existe(tabuleiro, [eixoX, eixoY], p).
+
+
+
+
+
+
+
 pino(1).
 livre(0).
 len(7).
