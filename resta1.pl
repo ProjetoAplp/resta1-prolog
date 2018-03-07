@@ -1,9 +1,18 @@
 :- initialization main.
 
+pino(1).
+livre(0).
+len(7).
+tabuleiro([[ , ,1,1,1, , ],
+       [ , ,1,1,1, , ],
+       [1,1,1,1,1,1,1],
+       [1,1,1,0,1,1,1],
+       [1,1,1,1,1,1,1],
+       [ , ,1,1,1, , ],
+       [ , ,1,1,1, , ]]).
+
+
 main:-
-
-
-
    write("RRRRRRRRRRRRRRRRR                                                 tttt                                   1111111"),nl,
     write("R::::::::::::::::R                                             ttt:::t                                  1::::::1"),nl,  
     write("R::::::RRRRRR:::::R                                            t:::::t                                 1:::::::1"),nl,
