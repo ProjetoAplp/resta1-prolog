@@ -1,26 +1,31 @@
 :- initialization main.
 
-existe(tabuleiro, [eixoX, eixoY], pino) :-
-    nth1(eixoX, tabuleiro, valores),
-    nth1(eixoY, valores, pino).
+existe(tabuleiro, [X, Y], pino) :-
+    nth1(X, tabuleiro, valores),
+    nth1(Y, valores, pino).
 
-existePino(tabuleiro, [eixoX, eixoY]) :-
+existePino(tabuleiro, [X, Y]) :-
     pino(p),
-    existe(tabuleiro, [eixoX, eixoY], p).
+    existe(tabuleiro, [X, Y], p).
 
-estaLivre(tabuleiro, [eixoX, eixoY]) :-
+estaLivre(tabuleiro, [X, Y]) :-
     livre(p),
-    existe(tabuleiro, [eixoX, eixoY], p).
+    existe(tabuleiro, [X, Y], p).
 
 
+validaPosicao(tabuleiro, [X,Y]) :- 
+    estaDentro(X), estaDentro(Y), estaLivre(tabuleiro, [X,Y]).
+validaPosicao(tabuleiro, [X,Y]) :- 
+    estaDentro(X), estaDentro(Y), existePino(tabuleiro, [X,Y]).
 
+estaDentro(X) :- tamanho(d), between(1, d, X).
 
 
 
 
 pino(1).
 livre(0).
-len(7).
+tamanho(7).
 tabuleiro([[x,x,1,1,1,x,x],
        [x,x,1,1,1,x,x],
        [1,1,1,1,1,1,1],
