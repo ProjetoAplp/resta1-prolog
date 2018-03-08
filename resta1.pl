@@ -17,6 +17,12 @@ mudaValorAux(Y, [H|T], Valor, [H|Z]) :- NovoY is Y-1, mudaValorAux(NovoY, T, Val
 mudaValor(1, Y, [H|T], Valor, [Z|T]) :- mudaValorAux(Y, H, Valor, Z).
 mudaValor(X, Y, [H|T], Valor, [H|Z]) :- NovoX is X-1, mudaValor(NovoX, Y, T, Valor, Z).
 
+colocaPino(Tabuleiro, [X,Y], NovoTab) :- pino(P), mudaValor(X, Y, Tabuleiro, P, NovoTab).
+eat_marble(Tabuleiro, [X,Y], NovoTab) :- livre(L),  mudaValor(X, Y, Tabuleiro, L, NovoTab).
+
+realizaJogada(Tabuleiro, [Origem, Meio, Final], NovoTab) :- removePino(Tabuleiro, Origem, NovoTab01), removePino(NovoTab01, Meio, NovoTab02),
+                                                            colocaPino(NovoTab02, Final, NovoTab).
+
 
 pino('1').
 livre('0').
