@@ -110,13 +110,13 @@ verificaOrigem(Linha, Coluna, Matrix) :- indexa_coluna(C, Coluna), existePino(Ma
 
 verificaSalto(Linha, Coluna, 0, Matrix) :- indexa_coluna(C, Coluna), L is Linha - 1, existePino(Matrix, [L,C]).
 verificaSalto(Linha, Coluna, 1, Matrix) :- indexa_coluna(C, Coluna), L is Linha + 1, existePino(Matrix, [L,C]).
-verificaSalto(Linha, Coluna, 2, Matrix) :- indexa_coluna(C, Coluna), C1 is C - 1, existePino(Matrix, [L,C1]).
-verificaSalto(Linha, Coluna, 3, Matrix) :- indexa_coluna(C, Coluna), C1 is C + 1, existePino(Matrix, [L,C1]).
+verificaSalto(Linha, Coluna, 2, Matrix) :- indexa_coluna(C, Coluna), C1 is C - 1, existePino(Matrix, [Linha,C1]).
+verificaSalto(Linha, Coluna, 3, Matrix) :- indexa_coluna(C, Coluna), C1 is C + 1, existePino(Matrix, [Linha,C1]).
 
 verificaDestino(Linha, Coluna, 0, Matrix) :- indexa_coluna(C, Coluna), L is Linha - 2, estaLivre(Matrix, [L,C]).
 verificaDestino(Linha, Coluna, 1, Matrix) :- indexa_coluna(C, Coluna), L is Linha + 2,estaLivre(Matrix, [L,C]).
-verificaDestino(Linha, Coluna, 2, Matrix) :- indexa_coluna(C, Coluna), C1 is C - 2, estaLivre(Matrix, [L,C1]).
-verificaDestino(Linha, Coluna, 3, Matrix) :- indexa_coluna(C, Coluna), C1 is C + 2, estaLivre(Matrix, [L,C1]).
+verificaDestino(Linha, Coluna, 2, Matrix) :- indexa_coluna(C, Coluna), C1 is C - 2, estaLivre(Matrix, [Linha,C1]).
+verificaDestino(Linha, Coluna, 3, Matrix) :- indexa_coluna(C, Coluna), C1 is C + 2, estaLivre(Matrix, [Linha,C1]).
 
 validaJogada(Linha, Coluna, Direcao, Matrix) :- verificaOrigem(Linha, Coluna, Matrix), verificaSalto(Linha, Coluna, Direcao, Matrix), verificaDestino(Linha, Coluna, Direcao, Matrix). 
 
