@@ -1,29 +1,29 @@
 :- initialization main.
 
-existe(tabuleiro, [X, Y], pino) :-
-    nth1(X, tabuleiro, valores),
-    nth1(Y, valores, pino).
+existe(Tabuleiro, [X, Y], V) :-
+    nth1(X, Tabuleiro, Val),
+    nth1(Y, Val, V).
 
-existePino(tabuleiro, [X, Y]) :-
-    pino(p),
-    existe(tabuleiro, [X, Y], p).
+existePino(Tabuleiro, [X, Y]) :-
+    pino(V),
+    existe(Tabuleiro, [X, Y], V).
 
-estaLivre(tabuleiro, [X, Y]) :-
-    livre(p),
-    existe(tabuleiro, [X, Y], p).
+estaLivre(Tabuleiro, [X, Y]) :-
+    livre(V),
+    existe(Tabuleiro, [X, Y], V).
 
-validaPosicao(tabuleiro, [X,Y]) :- 
-    estaDentro(X), estaDentro(Y), estaLivre(tabuleiro, [X,Y]).
-validaPosicao(tabuleiro, [X,Y]) :- 
-    estaDentro(X), estaDentro(Y), existePino(tabuleiro, [X,Y]).
+validaPosicao(Tabuleiro, [X,Y]) :- 
+    estaDentro(X), estaDentro(Y), estaLivre(Tabuleiro, [X,Y]).
+validaPosicao(Tabuleiro, [X,Y]) :- 
+    estaDentro(X), estaDentro(Y), existePino(Tabuleiro, [X,Y]).
 
-estaDentro(X) :- tamanho(d), between(1, d, X).
-
-
+estaDentro(X) :- tamanho(T), between(1, T, X).
 
 
-pino(1).
-livre(0).
+
+
+pino('1').
+livre('0').
 tamanho(7).
 
 criar_tabuleiro([
@@ -124,6 +124,8 @@ main:-
     write("Um movimento consiste em pegar uma peça e fazê-la 'saltar' sobre outra peça, sempre na horizontal ou na vertical, terminando em um espaço vazio, representado pelo caractere '0', adjacente a peça 'saltada'. A peça que foi 'saltada' é retirada do tabuleiro."),nl,
 
     criar_tabuleiro(Tabuleiro),
+
+    existePino(Tabuleiro, [1,4]),
 
 
     gameloop(Tabuleiro),
