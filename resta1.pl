@@ -57,6 +57,13 @@ indexa_linha(4, "5 ").
 indexa_linha(5, "6 ").
 indexa_linha(6, "7 ").
 
+indexa_coluna(0, "A ").
+indexa_coluna(1, "B ").
+indexa_coluna(2, "C ").
+indexa_coluna(3, "D ").
+indexa_coluna(4, "E ").
+indexa_coluna(5, "F ").
+indexa_coluna(6, "G ").
 
 gameloop(Matrix) :- imprimeTabuleiro(Matrix), 
                     lerLinha(Linha), 
@@ -72,6 +79,26 @@ lerLinha(Linha) :- write("Selecione a linha(1-7): "), read(Linha).
 lerColuna(Coluna) :- write("Selecione a culuna(A-G): "), read(Coluna).
 
 lerDirecao(Direcao) :- write("Selecione a direção(0 - Cima; 1 - Baixo; 2 - Esquerda; 3 - Direita): "), read(Direcao).
+
+verificaOrigem(Linha, Coluna, Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), existePino(Matrix, [L,C]).
+
+verificaSalto(Linha, Coluna, "0 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), existePino(Matrix, [L,(C - 1)]).
+
+verificaSalto(Linha, Coluna, "1 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), existePino(Matrix, [L,(C + 1)]).
+
+verificaSalto(Linha, Coluna, "2 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), existePino(Matrix, [(L - 1),C]).
+
+verificaSalto(Linha, Coluna, "3 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), existePino(Matrix, [(L + 1),C]).
+
+verificaDestino(Linha, Coluna, "0 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), estaLivre(Matrix, [L,(C - 2)]).
+
+verificaDestino(Linha, Coluna, "1 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), estaLivre(Matrix, [L,(C + 1)]).
+
+verificaDestino(Linha, Coluna, "2 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), estaLivre(Matrix, [(L - 1),C]).
+
+verificaDestino(Linha, Coluna, "3 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), estaLivre(Matrix, [(L + 1),C]).
+
+validarJogada(Linha, Coluna, Direcao, Matrix) :- verificaOrigem(Linha, Coluna, Direcao, Matrix), verificaSalto(Linha, Coluna, Direcao, Matrix), verificaDestino(Linha, Coluna, Direcao, Matrix). 
 
 main:-
    write("RRRRRRRRRRRRRRRRR                                                 tttt                                   1111111"),nl,
