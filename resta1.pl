@@ -77,26 +77,21 @@ printLines([H|T], Index) :-
 printLine([]).
 printLine([H|T]) :- write(H), write('  '), printLine(T).
 
-indexa_linha(0, "1 ").
-indexa_linha(1, "2 ").
-indexa_linha(2, "3 ").
-indexa_linha(3, "4 ").
-indexa_linha(4, "5 ").
-indexa_linha(5, "6 ").
-indexa_linha(6, "7 ").
+indexa_linha(0, "1").
+indexa_linha(1, "2").
+indexa_linha(2, "3").
+indexa_linha(3, "4").
+indexa_linha(4, "5").
+indexa_linha(5, "6").
+indexa_linha(6, "7").
 
-indexa_coluna(0, "A ").
-indexa_coluna(1, "B ").
-indexa_coluna(2, "C ").
-indexa_coluna(3, "D ").
-indexa_coluna(4, "E ").
-indexa_coluna(5, "F ").
-indexa_coluna(6, "G ").
-
-indexaDirecao("0", 0).
-indexaDirecao("1", 1).
-indexaDirecao("2", 2).
-indexaDirecao("3", 3).
+indexa_coluna(1, "A").
+indexa_coluna(2, "B").
+indexa_coluna(3, "C").
+indexa_coluna(4, "D").
+indexa_coluna(5, "E").
+indexa_coluna(6, "F").
+indexa_coluna(7, "G").
 
 
 /*Recebe jogada*/
@@ -111,19 +106,19 @@ lerDirecao(Direcao) :- write("Selecione a direção(0 - Cima; 1 - Baixo; 2 - Esq
 
 /*Valida jogada recebida*/
 
-verificaOrigem(Linha, Coluna, Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), existePino(Matrix, [L,C]).
+verificaOrigem(Linha, Coluna, Matrix) :- indexa_coluna(C, Coluna), existePino(Matrix, [Linha,C]).
 
-verificaSalto(Linha, Coluna, "0 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), existePino(Matrix, [L,(C - 1)]).
-verificaSalto(Linha, Coluna, "1 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), existePino(Matrix, [L,(C + 1)]).
-verificaSalto(Linha, Coluna, "2 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), existePino(Matrix, [(L - 1),C]).
-verificaSalto(Linha, Coluna, "3 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), existePino(Matrix, [(L + 1),C]).
+verificaSalto(Linha, Coluna, 0, Matrix) :- indexa_coluna(C, Coluna), L is Linha - 1, existePino(Matrix, [L,C]).
+verificaSalto(Linha, Coluna, 1, Matrix) :- indexa_coluna(C, Coluna), L is Linha + 1, existePino(Matrix, [L,C]).
+verificaSalto(Linha, Coluna, 2, Matrix) :- indexa_coluna(C, Coluna), C1 is C - 1, existePino(Matrix, [Linha,C1]).
+verificaSalto(Linha, Coluna, 3, Matrix) :- indexa_coluna(C, Coluna), C1 is C + 1, existePino(Matrix, [Linha,C1]).
 
-verificaDestino(Linha, Coluna, "0 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), estaLivre(Matrix, [L,(C - 2)]).
-verificaDestino(Linha, Coluna, "1 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), estaLivre(Matrix, [L,(C + 1)]).
-verificaDestino(Linha, Coluna, "2 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), estaLivre(Matrix, [(L - 1),C]).
-verificaDestino(Linha, Coluna, "3 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), estaLivre(Matrix, [(L + 1),C]).
+verificaDestino(Linha, Coluna, 0, Matrix) :- indexa_coluna(C, Coluna), L is Linha - 2, estaLivre(Matrix, [L,C]).
+verificaDestino(Linha, Coluna, 1, Matrix) :- indexa_coluna(C, Coluna), L is Linha + 2,estaLivre(Matrix, [L,C]).
+verificaDestino(Linha, Coluna, 2, Matrix) :- indexa_coluna(C, Coluna), C1 is C - 2, estaLivre(Matrix, [Linha,C1]).
+verificaDestino(Linha, Coluna, 3, Matrix) :- indexa_coluna(C, Coluna), C1 is C + 2, estaLivre(Matrix, [Linha,C1]).
 
-validarJogada(Linha, Coluna, Direcao, Matrix) :- verificaOrigem(Linha, Coluna, Matrix), verificaSalto(Linha, Coluna, Direcao, Matrix), verificaDestino(Linha, Coluna, Direcao, Matrix). 
+validaJogada(Linha, Coluna, Direcao, Matrix) :- verificaOrigem(Linha, Coluna, Matrix), verificaSalto(Linha, Coluna, Direcao, Matrix), verificaDestino(Linha, Coluna, Direcao, Matrix). 
 
 existe(Tabuleiro, [X, Y], V) :- nth1(X, Tabuleiro, Val), nth1(Y, Val, V).
 
@@ -196,7 +191,7 @@ gameloop(Matrix) :- imprimeTabuleiro(Matrix),
                     lerDirecao(Direcao),
                     verificarFimDeJogo
                     (
-                        validarJogada(Linha, Coluna, Direcao, Matrix) -> write("executarJogada(Matrix, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada)"), nl, gameloop(Matrix);
+                        validaJogada(Linha, Coluna, Direcao, Matrix) -> write("executarJogada(Matrix, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada)"), nl, gameloop(Matrix);
                         write("Jogada inválida"), nl, gameloop(Matrix)
                     ).
 
