@@ -166,11 +166,35 @@ posicaoFinal([X, Y], "3 ", [FimX, FimY]) :-
     FimX is X,
     FimY is Y+1.
 
+/*Verifica Fim do jogo*/
+
+existeCima(X,Y, Matrix):- existePino(Tabuleiro, [X, Y-1]).
+existeBaixo(X,Y,Matrix):- existePino(Tabuleiro, [X, Y+1]).
+existeEsquerda(X,Y, Matrix):- existePino(Tabuleiro, [X-1, Y]).
+existeDiereita(X,Y, Matrix):- existePino(Tabuleiro, [X+1, Y]).
+
+temAdjacente(X,Y, Matrix):-
+    existeCima(X,Y, Matrix);
+    existeBaixo(X,Y, Matrix);
+    existeEsquerda(X,Y, Matrix);
+    existeDiereita(X,Y, Matrix).
+
+temJogada(Matriz, X, Y) :- \+passouTamanho(X) , \+passouTamanho(Y)  , temAdjacente(X,Y, Matrix).
+temJogada(Matriz, (X+1), Y) , temJogada(Matriz, X, (Y+1)).
+
+verificarFimDeJogo(Matrix):-
+    \+temJogada(0,0,Matrix),
+    write("Fim de Jogo").
+verificarFimDeJogo(Matrix):-.
+
+
+
 /*Loop Principal */
 gameloop(Matrix) :- imprimeTabuleiro(Matrix), 
                     lerLinha(Linha), 
                     lerColuna(Coluna), 
-                    lerDirecao(Direcao), 
+                    lerDirecao(Direcao),
+                    verificarFimDeJogo
                     (
                         validarJogada(Linha, Coluna, Direcao, Matrix) -> write("executarJogada(Matrix, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada)"), nl, gameloop(Matrix);
                         write("Jogada inválida"), nl, gameloop(Matrix)
