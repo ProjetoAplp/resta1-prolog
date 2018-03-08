@@ -27,16 +27,35 @@ pino(1).
 livre(0).
 tamanho(7).
 
-criar_tabuleiro([[x,x,1,1,1,x,x],
-       [x,x,1,1,1,x,x],
-       [1,1,1,1,1,1,1],
-       [1,1,1,0,1,1,1],
-       [1,1,1,1,1,1,1],
-       [x,x,1,1,1,x,x],
-       [x,x,1,1,1,x,x]]).
+criar_tabuleiro([
+    [' ',' ','1','1','1',' ',' '],
+    [' ',' ','1','1','1',' ',' '],
+    ['1','1','1','1','1','1','1'],
+    ['1','1','1','0','1','1','1'],
+    ['1','1','1','1','1','1','1'],
+    [' ',' ','1','1','1',' ',' '],
+    [' ',' ','1','1','1',' ',' ']
+]).
 
-imprimeTabuleiro([]).
-imprimeTabuleiro([H|T]) :- write(H), nl, imprimeTabuleiro(T).
+imprimeTabuleiro(Matrix) :-
+    write('    A  B  C  D  E  F  G'), nl, nl,
+    printLines(Matrix, 0).
+
+printLines([], _).
+printLines([H|T], Index) :- indexa_linha(Index, Index_linha), write(Index_linha), write('  '), printLine(H), nl,
+    						NewIndex is Index+1,
+    						printLines(T, NewIndex).
+
+printLine([]).
+printLine([H|T]) :- write(H), write('  '), printLine(T).
+
+indexa_linha(0, "1 ").
+indexa_linha(1, "2 ").
+indexa_linha(2, "3 ").
+indexa_linha(3, "4 ").
+indexa_linha(4, "5 ").
+indexa_linha(5, "6 ").
+indexa_linha(6, "7 ").
 
 
 main:-
