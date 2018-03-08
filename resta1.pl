@@ -12,7 +12,6 @@ estaLivre(tabuleiro, [X, Y]) :-
     livre(p),
     existe(tabuleiro, [X, Y], p).
 
-
 validaPosicao(tabuleiro, [X,Y]) :- 
     estaDentro(X), estaDentro(Y), estaLivre(tabuleiro, [X,Y]).
 validaPosicao(tabuleiro, [X,Y]) :- 
@@ -69,10 +68,10 @@ gameloop(Matrix) :- imprimeTabuleiro(Matrix),
                     lerLinha(Linha), 
                     lerColuna(Coluna), 
                     lerDirecao(Direcao), 
-                    validarJogada(Linha, Coluna, Direcao, Matrix), 
-                    executarJogada(Matrix, MatrixAtualizada), 
-                    verificarFimDeJogo(MatrixAtualizada), 
-                    gameloop(MatrixAtualizada).
+                    (
+                        validarJogada(Linha, Coluna, Direcao, Matrix) -> write("executarJogada(Matrix, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada)"), nl, gameloop(Matrix);
+                        write("Jogada inválida"), nl, gameloop(Matrix)
+                    ).
 
 lerLinha(Linha) :- write("Selecione a linha(1-7): "), read(Linha).
 
@@ -126,10 +125,7 @@ main:-
 
     criar_tabuleiro(Tabuleiro),
 
-    imprimeTabuleiro(Tabuleiro),
 
-    lerLinha(Linha),
-
-    write(Linha),
+    gameloop(Tabuleiro),
 
     halt(0).
