@@ -58,6 +58,21 @@ indexa_linha(5, "6 ").
 indexa_linha(6, "7 ").
 
 
+gameloop(Matrix) :- imprimeTabuleiro(Matrix), 
+                    lerLinha(Linha), 
+                    lerColuna(Coluna), 
+                    lerDirecao(Direcao), 
+                    validarJogada(Linha, Coluna, Direcao, Matrix), 
+                    executarJogada(Matrix, MatrixAtualizada), 
+                    verificarFimDeJogo(MatrixAtualizada), 
+                    gameloop(MatrixAtualizada).
+
+lerLinha(Linha) :- write("Selecione a linha(1-7): "), read(Linha).
+
+lerColuna(Coluna) :- write("Selecione a culuna(A-G): "), read(Coluna).
+
+lerDirecao(Direcao) :- write("Selecione a direção(0 - Cima; 1 - Baixo; 2 - Esquerda; 3 - Direita): "), read(Direcao).
+
 main:-
    write("RRRRRRRRRRRRRRRRR                                                 tttt                                   1111111"),nl,
     write("R::::::::::::::::R                                             ttt:::t                                  1::::::1"),nl,  
@@ -85,5 +100,9 @@ main:-
     criar_tabuleiro(Tabuleiro),
 
     imprimeTabuleiro(Tabuleiro),
+
+    lerLinha(Linha),
+
+    write(Linha),
 
     halt(0).
