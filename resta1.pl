@@ -26,13 +26,17 @@ estaDentro(X) :- tamanho(d), between(1, d, X).
 pino(1).
 livre(0).
 tamanho(7).
-tabuleiro([[x,x,1,1,1,x,x],
+
+criar_tabuleiro([[x,x,1,1,1,x,x],
        [x,x,1,1,1,x,x],
        [1,1,1,1,1,1,1],
        [1,1,1,0,1,1,1],
        [1,1,1,1,1,1,1],
        [x,x,1,1,1,x,x],
        [x,x,1,1,1,x,x]]).
+
+imprimeTabuleiro([]).
+imprimeTabuleiro([H|T]) :- write(H), nl, imprimeTabuleiro(T).
 
 
 main:-
@@ -59,5 +63,8 @@ main:-
     write("O jogo apresenta duas formas de tabuleiro, a primeira com padrão inglês com 32 peças e a outra o padrão europeu com 36 peças."),nl,
     write("Um movimento consiste em pegar uma peça e fazê-la 'saltar' sobre outra peça, sempre na horizontal ou na vertical, terminando em um espaço vazio, representado pelo caractere '0', adjacente a peça 'saltada'. A peça que foi 'saltada' é retirada do tabuleiro."),nl,
 
+    criar_tabuleiro(Tabuleiro),
+
+    imprimeTabuleiro(Tabuleiro),
 
     halt(0).
