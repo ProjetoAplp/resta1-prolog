@@ -97,7 +97,7 @@ verificaDestino(Linha, Coluna, "2 ", Matrix) :- indexa_linha(L, Linha), indexa_c
 
 verificaDestino(Linha, Coluna, "3 ", Matrix) :- indexa_linha(L, Linha), indexa_coluna(C, Coluna), estaLivre(Matrix, [(L + 1),C]).
 
-validarJogada(Linha, Coluna, Direcao, Matrix) :- verificaOrigem(Linha, Coluna, Direcao, Matrix), verificaSalto(Linha, Coluna, Direcao, Matrix), verificaDestino(Linha, Coluna, Direcao, Matrix). 
+validarJogada(Linha, Coluna, Direcao, Matrix) :- verificaOrigem(Linha, Coluna, Matrix), verificaSalto(Linha, Coluna, Direcao, Matrix), verificaDestino(Linha, Coluna, Direcao, Matrix). 
 
 main:-
    write("RRRRRRRRRRRRRRRRR                                                 tttt                                   1111111"),nl,
