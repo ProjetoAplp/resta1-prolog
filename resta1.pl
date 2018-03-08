@@ -1,25 +1,21 @@
 :- initialization main.
 
-existe(Tabuleiro, [X, Y], V) :-
-    nth1(X, Tabuleiro, Val),
-    nth1(Y, Val, V).
+existe(Tabuleiro, [X, Y], V) :- nth1(X, Tabuleiro, Val), nth1(Y, Val, V).
 
-existePino(Tabuleiro, [X, Y]) :-
-    pino(V),
-    existe(Tabuleiro, [X, Y], V).
+existePino(Tabuleiro, [X, Y]) :- pino(V), existe(Tabuleiro, [X, Y], V).
 
-estaLivre(Tabuleiro, [X, Y]) :-
-    livre(V),
-    existe(Tabuleiro, [X, Y], V).
+estaLivre(Tabuleiro, [X, Y]) :- livre(V), existe(Tabuleiro, [X, Y], V).
 
-validaPosicao(Tabuleiro, [X,Y]) :- 
-    estaDentro(X), estaDentro(Y), estaLivre(Tabuleiro, [X,Y]).
-validaPosicao(Tabuleiro, [X,Y]) :- 
-    estaDentro(X), estaDentro(Y), existePino(Tabuleiro, [X,Y]).
+validaPosicao(Tabuleiro, [X,Y]) :- estaDentro(X), estaDentro(Y), estaLivre(Tabuleiro, [X,Y]).
+validaPosicao(Tabuleiro, [X,Y]) :- estaDentro(X), estaDentro(Y), existePino(Tabuleiro, [X,Y]).
 
 estaDentro(X) :- tamanho(T), between(1, T, X).
 
+mudaValorAux(1, [_|T], Valor, [Valor|T]).
+mudaValorAux(Y, [H|T], Valor, [H|Z]) :- NovoY is Y-1, mudaValorAux(NovoY, T, Valor, Z).
 
+mudaValor(1, Y, [H|T], Valor, [Z|T]) :- mudaValorAux(Y, H, Valor, Z).
+mudaValor(X, Y, [H|T], Valor, [H|Z]) :- NovoX is X-1, mudaValor(NovoX, Y, T, Valor, Z).
 
 
 pino('1').
@@ -124,8 +120,6 @@ main:-
     write("Um movimento consiste em pegar uma peça e fazê-la 'saltar' sobre outra peça, sempre na horizontal ou na vertical, terminando em um espaço vazio, representado pelo caractere '0', adjacente a peça 'saltada'. A peça que foi 'saltada' é retirada do tabuleiro."),nl,
 
     criar_tabuleiro(Tabuleiro),
-
-    existePino(Tabuleiro, [1,4]),
 
 
     gameloop(Tabuleiro),
