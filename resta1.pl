@@ -3,8 +3,8 @@
 
 /*Predicados de inicialacao do jogo */
 
-pino('1').
-livre('0').
+pino(1).
+livre(0).
 tamanho(7).
 
 instructions :-
@@ -27,10 +27,10 @@ instructions :-
 
     write("REGRAS:"),nl, 
     write("O objetivo é deixar apenas uma peça no tabuleiro após uma sequência de movimentos válidos."),nl,    
-    write("O tabuleiro possui um espaço vazio no centro, representado pelo caractere '0', com um número de peças, representadas pelo caractere '1', que designam uma estrutura pré-definida."),nl,
+    write("O tabuleiro possui um espaço vazio no centro, representado pelo caractere 0, com um número de peças, representadas pelo caractere 1, que designam uma estrutura pré-definida."),nl,
     write("O jogo apresenta duas formas de tabuleiro, a primeira com padrão inglês com 32 peças e a outra o padrão europeu com 36 peças."),nl,
     write("Um movimento consiste em pegar uma peça e fazê-la 'saltar' sobre outra peça, sempre na horizontal ou na vertical, terminando "),nl,
-    write("em um espaço vazio, representado pelo caractere '0', adjacente a peça 'saltada'. A peça que foi 'saltada' é retirada do tabuleiro."),nl,
+    write("em um espaço vazio, representado pelo caractere 0, adjacente a peça 'saltada'. A peça que foi 'saltada' é retirada do tabuleiro."),nl,
     nl.
 
 
@@ -42,31 +42,31 @@ escolheTabuleiro(Tabuleiro):-
 
 /*Tabuleiro Ingles*/
 criar_tabuleiro(1,[
-    [' ',' ','1','1','1',' ',' '],
-    [' ',' ','1','1','1',' ',' '],
-    ['1','1','1','1','1','1','1'],
-    ['1','1','1','0','1','1','1'],
-    ['1','1','1','1','1','1','1'],
-    [' ',' ','1','1','1',' ',' '],
-    [' ',' ','1','1','1',' ',' ']
+    [2,2,0,0,0,2,2],
+    [2,2,0,0,0,2,2],
+    [0,0,0,0,1,1,0],
+    [0,1,0,0,0,0,0],
+    [0,0,0,0,0,0,0],
+    [2,2,0,0,0,2,2],
+    [2,2,0,0,0,2,2]
 ]).
 
 /*Tabuleiro Europeu*/
 criar_tabuleiro(2,[
-    [' ',' ','1','1','1',' ',' '],
-    [' ','1','1','1','1','1',' '],
-    ['1','1','1','1','1','1','1'],
-    ['1','1','1','0','1','1','1'],
-    ['1','1','1','1','1','1','1'],
-    [' ','1','1','1','1','1',' '],
-    [' ',' ','1','1','1',' ',' ']
+    [2,2,1,1,1,2,2],
+    [2,1,1,1,1,1,2],
+    [1,1,1,1,1,1,1],
+    [1,1,1,0,1,1,1],
+    [1,1,1,1,1,1,1],
+    [2,1,1,1,1,1,2],
+    [2,2,1,1,1,2,2]
 ]).
 
 
 /* Esses fatos decidem como o tabuleiro eh impresso */
 
 imprimeTabuleiro(Matrix) :-
-    write('    A  B  C  D  E  F  G'), nl, nl,
+    write('   A  B  C  D  E  F  G'), nl, nl,
     printLines(Matrix, 0).
 
 printLines([], _).
@@ -144,8 +144,8 @@ sublist(Xs, [_|Ys]) :- sublist(Xs, Ys).
 
 temJogadaValidaLinha(Linha) :- 
     once(
-        sublist(['1','1','0'], Linha);
-        sublist(['0','1','1'], Linha)
+        sublist([1,1,0], Linha);
+        sublist([0,1,1], Linha)
     ).
 
 temJogadaValidaHorizontalMatrix(Matrix) :-
@@ -175,7 +175,7 @@ count(X, [_ | T], N) :-
 
 
 verificaVitoria(Tabuleiro) :-
-    flatten(Tabuleiro, Flat), count('1',Flat,N), N = 1.
+    flatten(Tabuleiro, Flat), count(1,Flat,N), N = 1.
 
 verificarFimDeJogo(Tabuleiro) :-
      \+ temJogadaValidaMatrix(Tabuleiro),
@@ -251,15 +251,12 @@ gameloop(Matrix) :- imprimeTabuleiro(Matrix),
                     lerLinha(Linha), 
                     lerColuna(Coluna), 
                     lerDirecao(Direcao),
-		    atom_string(C, Coluna),
-		    realizaJogada(Matrix, Linha, C, Direcao, M),
-		    gameloop(M).
-/*
+		            atom_string(C, Coluna),
 		    (
-                        validaJogada(Linha, C, Direcao, Matrix) -> realizaJogada(Matrix, Linha, C, Direcao, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada);
+validaJogada(Linha, C, Direcao, Matrix) -> realizaJogada(Matrix, Linha, C, Direcao, MatrixAtualizada), \+ verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada);
                         write("Jogada inválida"), nl, gameloop(Matrix)
                     ).
-*/
+
 
 
 /*inicia o Jogo*/
