@@ -227,16 +227,18 @@ realizaJogada(Tabuleiro, Linha, Coluna, 3, NovoTabuleiro) :-
 /*Loop Principal */
 
 ganharAutomaticamente([], Matrix) :- 
-    write("Parabéns! Você VENCEU!"),
+    write("Parabéns! Você VENCEU!"),nl,
     imprimeTabuleiro(Matrix).
+
 ganharAutomaticamente([H|T], Matrix) :- 
     imprimeTabuleiro(Matrix),
     nth0(0, H, Linha),
     nth0(1, H, Coluna),
     nth0(2, H, Direcao),
-    indexa_coluna(Coluna, Coluna1),
-    /*realizaJogada(Matrix, Linha, Coluna1, Direcao, MatrixAtualizada),*/
-    write(T),
+    C is Coluna - 1,
+    indexa_coluna(C, Coluna1),
+    L is Linha - 1,
+    realizaJogada(Matrix, L, Coluna1, Direcao, MatrixAtualizada),
     ganharAutomaticamente(T, MatrixAtualizada).
 
 sequencia([[2,4,1], [5,4,0], [4,6,2], [4,3,3], [2,3,1], [5,6,2], [3,1,3], [7,5,0], [3,4,2], [4,5,1], [5,1,0], [7,3,3], [3,1,3], [7,5,0], [4,3,0], [5,4,3], [3,6,2], [1,5,1], [5,7,2], [5,2,3], [5,4,3], [3,7,1], [5,7,2], [6,3,3], [6,5,0], [4,5,0], [1,3,3], [1,5,1], [3,5,2], [2,3,1], [4,2,3]]).
@@ -244,7 +246,6 @@ sequencia([[2,4,1], [5,4,0], [4,6,2], [4,3,3], [2,3,1], [5,6,2], [3,1,3], [7,5,0
 
 jogar(s) :- sequencia(Jogadas), criar_tabuleiro(1, Tabuleiro), ganharAutomaticamente(Jogadas, Tabuleiro).
 jogar(n) :- escolheTabuleiro(Tabuleiro), gameloop(Tabuleiro).
-
 
 gameloop(Matrix) :- imprimeTabuleiro(Matrix), 
                     lerLinha(Linha), 
