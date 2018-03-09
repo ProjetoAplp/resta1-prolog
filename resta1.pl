@@ -99,7 +99,7 @@ indexa_coluna(7, "G").
 
 lerLinha(Linha) :- write("Selecione a linha(1-7): "), read(Linha).
 
-lerColuna(Coluna) :- write("Selecione a culuna(A-G): "), read(Coluna).
+lerColuna(Coluna) :- write("Selecione a coluna(A-G): "), read(Coluna).
 
 lerDirecao(Direcao) :- write("Selecione a direção(0 - Cima; 1 - Baixo; 2 - Esquerda; 3 - Direita): "), read(Direcao).
 
@@ -207,13 +207,82 @@ sequencia([[2,4,1], [5,4,0], [4,6,2], [4,3,3], [2,3,1], [5,6,2], [3,1,3], [7,5,0
 jogar(s) :- sequencia(Jogadas), criar_tabuleiro(1, Tabuleiro), ganharAutomaticamente(Jogadas, Tabuleiro).
 jogar(n) :- escolheTabuleiro(Tabuleiro), gameloop(Tabuleiro).
 
+/*Realiza jogada*/
+replace( Matriz , Linha , Coluna , NovoValor , NovaMatriz ) :-
+
+    append(RowPfx,[Row|RowSfx],Matriz),        
+    length(RowPfx,Linha) ,                         
+    append(ColPfx,[_|ColSfx],Row) ,            
+    length(ColPfx,Coluna) ,                         
+    append(ColPfx,[NovoValor|ColSfx],RowNew) , 
+    append(RowPfx,[RowNew|RowSfx],NovaMatriz)
+  .
+
+/*movimenta para Cima*/
+executarJogada(Linha, Coluna, 0, Matrix, MatrixAtualizada):-
+    indexa_coluna(C,Coluna), 
+    Col is  C-1,
+    Lin is Linha -1,
+    Lin2 is Lin -1 ,
+    Lin3 is Lin -2,
+
+
+    replace(Matrix, Lin  ,Col ,'0', MatrixAtualizada1), % limpa espaco inicial
+    replace(MatrixAtualizada1, Lin2 ,Col ,'0', MatrixAtualizada2), % limpa espaco adjacente
+    replace(MatrixAtualizada2, Lin3 ,Col ,'1', MatrixAtualizada) % adciona peca ao destino final
+    .
+
+/*movimenta para Baixo*/
+executarJogada(Linha, Coluna, 1, Matrix, MatrixAtualizada):-
+    indexa_coluna(C,Coluna), 
+    Col is  C-1,
+    Lin is Linha -1,
+    Lin2 is Lin +1 ,
+    Lin3 is Lin +2,
+
+
+    replace(Matrix, Lin  ,Col ,'0', MatrixAtualizada1), % limpa espaco inicial
+    replace(MatrixAtualizada1, Lin2 ,Col ,'0', MatrixAtualizada2), % limpa espaco adjacente
+    replace(MatrixAtualizada2, Lin3 ,Col ,'1', MatrixAtualizada) % adciona peca ao destino final
+.
+
+/*movimenta para Esquerda*/
+executarJogada(Linha, Coluna, 2, Matrix, MatrixAtualizada):-
+    indexa_coluna(C,Coluna), 
+    Col is  C-1,
+    Lin is Linha -1,
+    Col2 is Col -1 ,
+    Col3 is Col -2,
+
+
+    replace(Matrix, Lin  ,Col ,'0', MatrixAtualizada1), % limpa espaco inicial
+    replace(MatrixAtualizada1, Lin ,Col2 ,'0', MatrixAtualizada2), % limpa espaco adjacente
+    replace(MatrixAtualizada2, Lin ,Col3 ,'1', MatrixAtualizada) % adciona peca ao destino final
+.
+
+/*movimenta para Direita*/
+executarJogada(Linha, Coluna, 3, Matrix, MatrixAtualizada):-
+    indexa_coluna(C,Coluna), 
+    Col is  C-1,
+    Lin is Linha -1,
+
+    Col2 is Col +1 ,
+    Col3 is Col +2,
+
+
+    replace(Matrix, Lin  ,Col ,'0', MatrixAtualizada1), % limpa espaco inicial
+    replace(MatrixAtualizada1, Lin ,Col2 ,'0', MatrixAtualizada2), % limpa espaco adjacente
+    replace(MatrixAtualizada2, Lin ,Col3 ,'1', MatrixAtualizada) % adciona peca ao destino final
+.
+
+
 
 gameloop(Matrix) :- imprimeTabuleiro(Matrix), 
                     lerLinha(Linha), 
                     lerColuna(Coluna), 
                     lerDirecao(Direcao),
                     (
-                        validaJogada(Linha, Coluna, Direcao, Matrix) -> write("executarJogada(Matrix, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada)"), nl, gameloop(Matrix);
+                        validaJogada(Linha, Coluna, Direcao, Matrix) -> executarJogada(Linha, Coluna, Direcao, Matrix, MatrixAtualizada), /*verificarFimDeJogo(MatrixAtualizada),*/ gameloop(MatrixAtualizada);
                         write("Jogada inválida"), nl, gameloop(Matrix)
                     ).
 
