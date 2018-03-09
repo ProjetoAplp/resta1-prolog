@@ -86,20 +86,20 @@ indexa_linha(4, "5").
 indexa_linha(5, "6").
 indexa_linha(6, "7").
 
-indexa_coluna(0, "A").
-indexa_coluna(1, "B").
-indexa_coluna(2, "C").
-indexa_coluna(3, "D").
-indexa_coluna(4, "E").
-indexa_coluna(5, "F").
-indexa_coluna(6, "G").
+indexa_coluna(0, a).
+indexa_coluna(1, b).
+indexa_coluna(2, c).
+indexa_coluna(3, d).
+indexa_coluna(4, e).
+indexa_coluna(5, f).
+indexa_coluna(6, g).
 
 
 /*Recebe jogada*/
 
 lerLinha(Linha) :- write("Selecione a linha(1-7): "), read(L), Linha is L -1.
 
-lerColuna(Coluna) :- write("Selecione a culuna(A-G): "), read(Coluna).
+lerColuna(Coluna) :- write("Selecione a culuna(a-g): "), read(Coluna).
 
 lerDirecao(Direcao) :- write("Selecione a direção(0 - Cima; 1 - Baixo; 2 - Esquerda; 3 - Direita): "), read(Direcao).
 
@@ -250,22 +250,31 @@ gameloop(Matrix) :- imprimeTabuleiro(Matrix),
                     lerLinha(Linha), 
                     lerColuna(Coluna), 
                     lerDirecao(Direcao),
-                    validaJogada(Linha, Coluna, Direcao, Matrix),
-                    realizaJogada(Matrix, Linha, Coluna, Direcao, T),
-                    /*indexa_coluna(C, Coluna), write(C), replace(Matrix, Linha, C, 'X', T),*/
-                    gameloop(T).
-                    /*(
-                        validaJogada(Linha, Coluna, Direcao, Matrix) -> realizaJogada(Matrix, Linha, Coluna, Direcao, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada);
+		    atom_string(C, Coluna),
+		    realizaJogada(Matrix, Linha, C, Direcao, M),
+		    gameloop(M).
+/*
+		    (
+                        validaJogada(Linha, C, Direcao, Matrix) -> realizaJogada(Matrix, Linha, C, Direcao, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada);
                         write("Jogada inválida"), nl, gameloop(Matrix)
-                    ).*/
-
+                    ).
+*/
 
 
 /*inicia o Jogo*/
 :- initialization main.
 main :-
     instructions,
+/*
+    criar_tabuleiro(1,T),
+    imprimeTabuleiro(T),
+    realizaJogada(T, 3, "B",  3, T1),
+    imprimeTabuleiro(T1),
+    realizaJogada(T1, 3, "E", 2, T2),
+    imprimeTabuleiro(T2),
+*/
     write("Deseja jogar automaticamente? (s/n) "), read(Op),
     atom_string(R, Op),
     jogar(R),
-    halt(0).
+  
+  halt(0).
