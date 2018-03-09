@@ -1,4 +1,5 @@
-:- initialization main.
+:- use_module(library(clpfd)).
+
 
 /*Predicados de inicialacao do jogo */
 
@@ -36,7 +37,7 @@ instructions :-
 /*Escolhe o tipo do tabuleiro*/
 
 escolheTabuleiro(Escolha, Tabuleiro):-
-    write("Digite 1 para o tabuleiro Ingles ou 2 para o tabuleiro Europeu  "), read(Escolha),
+    write("Digite 1 para o tabuleiro Ingles, 2 para o tabuleiro Europeu"), read(Escolha),
     criar_tabuleiro(Escolha, Tabuleiro).
 
 /*Tabuleiro Ingles*/
@@ -131,56 +132,67 @@ validaPosicao(Tabuleiro, [X,Y]) :- estaDentro(X), estaDentro(Y), existePino(Tabu
 
 estaDentro(X) :- tamanho(T), between(1, T, X).
 
-/*Executa jogada*/
-
-realizaJogada(Tabuleiro, [Origem, Meio, Final], NovoTab) :- removePino(Tabuleiro, Origem, NovoTab01), removePino(NovoTab01, Meio, NovoTab02),
-                                                            colocaPino(NovoTab02, Final, NovoTab).
-                                                            
-mudaValorAux(1, [_|T], Valor, [Valor|T]).
-mudaValorAux(Y, [H|T], Valor, [H|Z]) :- NovoY is Y-1, mudaValorAux(NovoY, T, Valor, Z).
-
-mudaValor(1, Y, [H|T], Valor, [Z|T]) :- mudaValorAux(Y, H, Valor, Z).
-mudaValor(X, Y, [H|T], Valor, [H|Z]) :- NovoX is X-1, mudaValor(NovoX, Y, T, Valor, Z).
-
-colocaPino(Tabuleiro, [X, Y], NovoTab) :- pino(P), mudaValor(X, Y, Tabuleiro, P, NovoTab).
-removePino(Tabuleiro, [X, Y], NovoTab) :- livre(L),  mudaValor(X, Y, Tabuleiro, L, NovoTab).
-
-posicaoFinal([X, Y], "0 ", [FimX, FimY]) :-
-    FimX is X-1,
-    FimY is Y.
-
-posicaoFinal([X, Y], "1 ", [FimX, FimY]) :-
-    FimX is X+1,
-    FimY is Y.
-
-posicaoFinal([X, Y], "2 ", [FimX, FimY]) :-
-    FimX is X,
-    FimY is Y-1.
-
-posicaoFinal([X, Y], "3 ", [FimX, FimY]) :-
-    FimX is X,
-    FimY is Y+1.
-
 /*Verifica Fim do jogo*/
 
-existeCima(X,Y, Matrix):- existePino(Tabuleiro, [X, Y-1]).
-existeBaixo(X,Y,Matrix):- existePino(Tabuleiro, [X, Y+1]).
-existeEsquerda(X,Y, Matrix):- existePino(Tabuleiro, [X-1, Y]).
-existeDiereita(X,Y, Matrix):- existePino(Tabuleiro, [X+1, Y]).
+rotacionaMatrix(Xss, Zss) :-
+   transpose(Xss, Yss),
+   maplist(reverse, Yss, Zss).
 
-temAdjacente(X,Y, Matrix):-
-    existeCima(X,Y, Matrix);
-    existeBaixo(X,Y, Matrix);
-    existeEsquerda(X,Y, Matrix);
-    existeDiereita(X,Y, Matrix).
+criar_tabuleiro(2,[
+    [' ',' ','0','0','0',' ',' '],
+    [' ','0','0','0','0','0',' '],
+    ['0','0','0','0','0','0','0'],
+    ['0','0','0','0','0','0','0'],
+    ['0','0','1','0','0','0','0'],
+    [' ','0','0','0','0','0',' '],
+    [' ',' ','0','0','1',' ',' ']
+]).
 
-temJogada(Matriz, X, Y) :- \+passouTamanho(X) , \+passouTamanho(Y)  , temAdjacente(X,Y, Matrix).
-temJogada(Matriz, (X+1), Y) , temJogada(Matriz, X, (Y+1)).
+sublist([], L).
+sublist([X1,X2,X3], [X1,X2,X3|Ys]).
+sublist(Xs, [_|Ys]) :- sublist(Xs, Ys).
 
-verificarFimDeJogo(Matrix):-
-    \+temJogada(0,0,Matrix),
-    write("Fim de Jogo").
-verificarFimDeJogo(Matrix):-.
+temJogadaValidaLinha(Linha) :- 
+    once(
+        sublist(['1','1','0'], Linha);
+        sublist(['0','1','1'], Linha)
+    ).
+
+temJogadaValidaHorizontalMatrix(Matrix) :-
+    once(
+        (nth0(0, Matrix, Linha1), temJogadaValidaLinha(Linha1));
+        (nth0(1, Matrix, Linha2), temJogadaValidaLinha(Linha2));
+        (nth0(2, Matrix, Linha3), temJogadaValidaLinha(Linha3));
+        (nth0(3, Matrix, Linha4), temJogadaValidaLinha(Linha4));
+        (nth0(4, Matrix, Linha5), temJogadaValidaLinha(Linha5));
+        (nth0(5, Matrix, Linha6), temJogadaValidaLinha(Linha6));
+        (nth0(6, Matrix, Linha7), temJogadaValidaLinha(Linha7))
+    ).
+
+temJogadaValidaMatrix(Tabuleiro) :-
+    rotacionaMatrix(Tabuleiro, TabuleiroRotacionado),
+    once(
+        temJogadaValidaHorizontalMatrix(Tabuleiro);
+        temJogadaValidaHorizontalMatrix(TabuleiroRotacionado)
+    ).
+
+count(_, [], 0).
+count(X, [X | T], N) :-
+  !, count(X, T, N1),
+  N is N1 + 1.
+count(X, [_ | T], N) :-
+  count(X, T, N).
+
+
+verificaVitoria(Tabuleiro) :-
+    flatten(Tabuleiro, Flat), count('1',Flat,N), N = 1.
+
+verificarFimDeJogo(Tabuleiro) :-
+     \+ temJogadaValidaMatrix(Tabuleiro),
+     (
+        verificaVitoria(Tabuleiro) -> write('Parabéns, você venceu!');
+        write('Você perdeu, tente novamente.')
+     ).
 
 
 
@@ -189,7 +201,6 @@ gameloop(Matrix) :- imprimeTabuleiro(Matrix),
                     lerLinha(Linha), 
                     lerColuna(Coluna), 
                     lerDirecao(Direcao),
-                    verificarFimDeJogo
                     (
                         validaJogada(Linha, Coluna, Direcao, Matrix) -> write("executarJogada(Matrix, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada)"), nl, gameloop(Matrix);
                         write("Jogada inválida"), nl, gameloop(Matrix)
@@ -198,9 +209,9 @@ gameloop(Matrix) :- imprimeTabuleiro(Matrix),
 
 
 /*inicia o Jogo*/
-main:-
+:- initialization main.
+main :-
     instructions,
     escolheTabuleiro(Escolha, Tabuleiro),
     gameloop(Tabuleiro),
-
     halt(0).
