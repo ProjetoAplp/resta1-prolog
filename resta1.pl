@@ -86,18 +86,18 @@ indexa_linha(4, "5").
 indexa_linha(5, "6").
 indexa_linha(6, "7").
 
-indexa_coluna(1, "A").
-indexa_coluna(2, "B").
-indexa_coluna(3, "C").
-indexa_coluna(4, "D").
-indexa_coluna(5, "E").
-indexa_coluna(6, "F").
-indexa_coluna(7, "G").
+indexa_coluna(0, "A").
+indexa_coluna(1, "B").
+indexa_coluna(2, "C").
+indexa_coluna(3, "D").
+indexa_coluna(4, "E").
+indexa_coluna(5, "F").
+indexa_coluna(6, "G").
 
 
 /*Recebe jogada*/
 
-lerLinha(Linha) :- write("Selecione a linha(1-7): "), read(Linha).
+lerLinha(Linha) :- write("Selecione a linha(1-7): "), read(L), Linha is L -1.
 
 lerColuna(Coluna) :- write("Selecione a culuna(A-G): "), read(Coluna).
 
@@ -121,7 +121,7 @@ verificaDestino(Linha, Coluna, 3, Matrix) :- indexa_coluna(C, Coluna), C1 is C +
 
 validaJogada(Linha, Coluna, Direcao, Matrix) :- verificaOrigem(Linha, Coluna, Matrix), verificaSalto(Linha, Coluna, Direcao, Matrix), verificaDestino(Linha, Coluna, Direcao, Matrix). 
 
-existe(Tabuleiro, [X, Y], V) :- nth1(X, Tabuleiro, Val), nth1(Y, Val, V).
+existe(Tabuleiro, [X, Y], V) :- nth0(X, Tabuleiro, Val), nth0(Y, Val, V).
 
 existePino(Tabuleiro, [X, Y]) :- pino(V), existe(Tabuleiro, [X, Y], V).
 
@@ -184,7 +184,45 @@ verificarFimDeJogo(Tabuleiro) :-
         write('Você perdeu, tente novamente.')
      ).
 
+/* Realiza Jogada 
+L: matriz,
+X
+Y
+Z: valor
+R: nova matriz
+*/
 
+replace( L , X , Y , Z , R ) :-
+  append(RowPfx,[Row|RowSfx],L),     % decompose the list-of-lists into a prefix, a list and a suffix
+  length(RowPfx,X) ,                 % check the prefix length: do we have the desired list?
+  append(ColPfx,[_|ColSfx],Row) ,    % decompose that row into a prefix, a column and a suffix
+  length(ColPfx,Y) ,                 % check the prefix length: do we have the desired column?
+  append(ColPfx,[Z|ColSfx],RowNew) , % if so, replace the column with its new value
+  append(RowPfx,[RowNew|RowSfx],R)   % and assemble the transformed list-of-lists
+  .
+
+realizaJogada(Tabuleiro, Linha, Coluna, 0, NovoTabuleiro) :-
+    indexa_coluna(C, Coluna), replace(Tabuleiro, Linha, C, 0, NovoTabuleiro1),
+    L is Linha - 1,  replace(NovoTabuleiro1, L, C, 0, NovoTabuleiro2),
+    L2 is Linha - 2,  replace(NovoTabuleiro2, L2, C, 1, NovoTabuleiro).
+
+
+realizaJogada(Tabuleiro, Linha, Coluna, 1, NovoTabuleiro) :-
+    indexa_coluna(C, Coluna), replace(Tabuleiro, Linha, C, 0, NovoTabuleiro1),
+    L is Linha + 1,  replace(NovoTabuleiro1, L, C, 0, NovoTabuleiro2),
+    L2 is Linha + 2,  replace(NovoTabuleiro2, L2, C, 1, NovoTabuleiro).
+
+
+realizaJogada(Tabuleiro, Linha, Coluna, 2, NovoTabuleiro) :-
+    indexa_coluna(C, Coluna), replace(Tabuleiro, Linha, C, 0, NovoTabuleiro1),
+    C1 is C - 1,  replace(NovoTabuleiro1, Linha, C1, 0, NovoTabuleiro2),
+    C2 is C - 2,  replace(NovoTabuleiro2, Linha, C2, 1, NovoTabuleiro).
+
+
+realizaJogada(Tabuleiro, Linha, Coluna, 3, NovoTabuleiro) :-
+    indexa_coluna(C, Coluna), replace(Tabuleiro, Linha, C, 0, NovoTabuleiro1),
+    C1 is C + 1,  replace(NovoTabuleiro1, Linha, C1, 0, NovoTabuleiro2),
+    C2 is C + 2,  replace(NovoTabuleiro2, Linha, C2, 1, NovoTabuleiro).
 
 /*Loop Principal */
 
@@ -212,10 +250,14 @@ gameloop(Matrix) :- imprimeTabuleiro(Matrix),
                     lerLinha(Linha), 
                     lerColuna(Coluna), 
                     lerDirecao(Direcao),
-                    (
-                        validaJogada(Linha, Coluna, Direcao, Matrix) -> write("executarJogada(Matrix, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada)"), nl, gameloop(Matrix);
+                    validaJogada(Linha, Coluna, Direcao, Matrix),
+                    realizaJogada(Matrix, Linha, Coluna, Direcao, T),
+                    /*indexa_coluna(C, Coluna), write(C), replace(Matrix, Linha, C, 'X', T),*/
+                    gameloop(T).
+                    /*(
+                        validaJogada(Linha, Coluna, Direcao, Matrix) -> realizaJogada(Matrix, Linha, Coluna, Direcao, MatrixAtualizada), verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada);
                         write("Jogada inválida"), nl, gameloop(Matrix)
-                    ).
+                    ).*/
 
 
 
