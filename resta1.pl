@@ -45,7 +45,7 @@ criar_tabuleiro(1,[
     [2,2,0,0,0,2,2],
     [2,2,0,0,0,2,2],
     [0,0,0,0,1,1,0],
-    [0,1,0,0,0,0,0],
+    [0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0],
     [2,2,0,0,0,2,2],
     [2,2,0,0,0,2,2]
@@ -182,7 +182,7 @@ verificarFimDeJogo(Tabuleiro) :-
      (
         verificaVitoria(Tabuleiro) -> write('Parabéns, você venceu!');
         write('Você perdeu, tente novamente.')
-     ).
+     ), nl, imprimeTabuleiro(Tabuleiro), nl, halt(0).
 
 /* Realiza Jogada 
 L: matriz,
@@ -227,11 +227,11 @@ realizaJogada(Tabuleiro, Linha, Coluna, 3, NovoTabuleiro) :-
 /*Loop Principal */
 
 ganharAutomaticamente([], Matrix) :- 
-    write("Parabéns! Você VENCEU!"),nl,
+    nl, nl, write("Parabéns! Você VENCEU!"), nl,
     imprimeTabuleiro(Matrix).
 
 ganharAutomaticamente([H|T], Matrix) :- 
-    imprimeTabuleiro(Matrix),
+    nl, nl, imprimeTabuleiro(Matrix),
     nth0(0, H, Linha),
     nth0(1, H, Coluna),
     nth0(2, H, Direcao),
@@ -252,8 +252,11 @@ gameloop(Matrix) :- imprimeTabuleiro(Matrix),
                     lerColuna(Coluna), 
                     lerDirecao(Direcao),
 		            atom_string(C, Coluna),
-		    (
-validaJogada(Linha, C, Direcao, Matrix) -> realizaJogada(Matrix, Linha, C, Direcao, MatrixAtualizada), \+ verificarFimDeJogo(MatrixAtualizada), gameloop(MatrixAtualizada);
+		            (
+                        validaJogada(Linha, C, Direcao, Matrix) -> 
+                            realizaJogada(Matrix, Linha, C, Direcao, MatrixAtualizada), 
+                            \+ verificarFimDeJogo(MatrixAtualizada), 
+                            gameloop(MatrixAtualizada);
                         write("Jogada inválida"), nl, gameloop(Matrix)
                     ).
 
