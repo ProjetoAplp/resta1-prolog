@@ -36,7 +36,7 @@ instructions :-
 
 /*Escolhe o tipo do tabuleiro*/
 
-escolheTabuleiro(Escolha, Tabuleiro):-
+escolheTabuleiro(Tabuleiro):-
     write("Digite 1 para o tabuleiro Ingles, 2 para o tabuleiro Europeu"), read(Escolha),
     criar_tabuleiro(Escolha, Tabuleiro).
 
@@ -187,6 +187,27 @@ verificarFimDeJogo(Tabuleiro) :-
 
 
 /*Loop Principal */
+
+ganharAutomaticamente([], Matrix) :- 
+    write("Parabéns! Você VENCEU!"),
+    imprimeTabuleiro(Matrix).
+ganharAutomaticamente([H|T], Matrix) :- 
+    imprimeTabuleiro(Matrix),
+    nth0(0, H, Linha),
+    nth0(1, H, Coluna),
+    nth0(2, H, Direcao),
+    indexa_coluna(Coluna, Coluna1),
+    /*realizaJogada(Matrix, Linha, Coluna1, Direcao, MatrixAtualizada),*/
+    write(T),
+    ganharAutomaticamente(T, MatrixAtualizada).
+
+sequencia([[2,4,1], [5,4,0], [4,6,2], [4,3,3], [2,3,1], [5,6,2], [3,1,3], [7,5,0], [3,4,2], [4,5,1], [5,1,0], [7,3,3], [3,1,3], [7,5,0], [4,3,0], [5,4,3], [3,6,2], [1,5,1], [5,7,2], [5,2,3], [5,4,3], [3,7,1], [5,7,2], [6,3,3], [6,5,0], [4,5,0], [1,3,3], [1,5,1], [3,5,2], [2,3,1], [4,2,3]]).
+
+
+jogar(s) :- sequencia(Jogadas), criar_tabuleiro(1, Tabuleiro), ganharAutomaticamente(Jogadas, Tabuleiro).
+jogar(n) :- escolheTabuleiro(Tabuleiro), gameloop(Tabuleiro).
+
+
 gameloop(Matrix) :- imprimeTabuleiro(Matrix), 
                     lerLinha(Linha), 
                     lerColuna(Coluna), 
@@ -202,6 +223,7 @@ gameloop(Matrix) :- imprimeTabuleiro(Matrix),
 :- initialization main.
 main :-
     instructions,
-    escolheTabuleiro(Escolha, Tabuleiro),
-    gameloop(Tabuleiro),
+    write("Deseja jogar automaticamente? (s/n) "), read(Op),
+    atom_string(R, Op),
+    jogar(R),
     halt(0).
